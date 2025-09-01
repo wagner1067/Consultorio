@@ -1,10 +1,10 @@
-import { Pacient } from "../models/Pacient.js";
+import Pacient from "../models/Pacient.js";
 
 const getAllPacients = async () => {
   try {
     return await Pacient.find();
   } catch (error) {
-    throw new Error(Error, "Error fetching pacients");
+    throw new Error(error);
   }
 };
 
@@ -12,7 +12,7 @@ const getPacientById = async (id) => {
   try {
     return await Pacient.findById(id);
   } catch (error) {
-    throw new Error(Error, "Pacient not found");
+    throw new Error(error);
   }
 };
 
@@ -21,7 +21,7 @@ const savePacient = async ({ name, birthDate, email, phone }) => {
     const pacient = new Pacient({ name, birthDate, email, phone });
     return await pacient.save();
   } catch (error) {
-    throw new Error(Error, "Error saving pacient");
+    throw new Error(error);
   }
 };
 
@@ -34,7 +34,7 @@ const updatePacient = async (id, { name, birthDate, email, phone }) => {
       phone,
     });
   } catch (error) {
-    throw new Error(Error, "Error updating pacient");
+    throw new Error(error);
   }
 };
 
@@ -42,7 +42,7 @@ const deletePacient = async (id) => {
   try {
     return await Pacient.findByIdAndDelete(id);
   } catch (error) {
-    throw new Error(Error, "Error deleting pacient");
+    throw new Error(error);
   }
 };
 

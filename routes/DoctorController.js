@@ -1,14 +1,15 @@
-import { express } from "express";
+import express from "express";
+import bcrypt from "bcrypt";
 import DoctorService from "../services/DoctorService.js";
 
-let router = express.Router();
+const router = express.Router();
 
 router.get("/doctors", async (req, res) => {
   try {
     const doctors = await DoctorService.getAllDoctors();
     res.status(200).json(doctors);
   } catch (error) {
-    console.error("Error fetching doctors:", error);
+    console.error("Error fetching doctors:" + error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
@@ -19,12 +20,12 @@ router.get("/doctors/:id", async (req, res) => {
     const doctor = await DoctorService.getDoctorById(id);
     res.status(200).json(doctor);
   } catch (error) {
-    console.error("Error fetching doctor:", error);
+    console.error("Error fetching doctor:" + error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
 
-router.post("/doctors", async (req, res) => {
+router.post("/doctors", async function (req, res) {
   const {
     name,
     login,
@@ -35,19 +36,20 @@ router.post("/doctors", async (req, res) => {
     phone,
   } = req.body;
   try {
+    const hashedPassword = await bcrypt.hash(password, 10);
     const doctor = await DoctorService.saveDoctor({
       name,
       login,
-      password,
+      password: hashedPassword,
       medicalSpecialty,
       medicalRegistration,
       email,
       phone,
     });
-    res.status(201).json(doctor);
+    res.status(201).send(doctor);
   } catch (error) {
-    console.error("Error saving doctor:", error);
-    res.status(500).json({ message: "Internal server error" });
+    console.error(error);
+    res.status(500).send("Falha ao registrar médico" + error);
   }
 });
 
@@ -74,7 +76,7 @@ router.put("/doctors/:id", async (req, res) => {
     });
     res.status(200).json(doctor);
   } catch (error) {
-    console.error("Error updating doctor:", error);
+    console.error("Error updating doctor:" + error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
@@ -85,7 +87,7 @@ router.delete("/doctors/:id", async (req, res) => {
     await DoctorService.deleteDoctor(id);
     res.status(204).send();
   } catch (error) {
-    console.error("Error deleting doctor:", error);
+    console.error("Error deleting doctor:" + error);
     res.status(500).json({ message: "Internal server error" });
   }
 });

@@ -1,10 +1,10 @@
-import { Doctor } from "../models/Doctor.js";
+import Doctor from "../models/Doctor.js";
 
 const getAllDoctors = async () => {
   try {
     return await Doctor.find();
   } catch (error) {
-    throw new Error(Error, "Error fetching doctors");
+    throw new Error(error);
   }
 };
 
@@ -12,7 +12,7 @@ const getDoctorById = async (id) => {
   try {
     return await Doctor.findById(id);
   } catch (error) {
-    throw new Error(Error, "Doctor not found");
+    throw new Error(error);
   }
 };
 
@@ -37,7 +37,7 @@ const saveDoctor = async ({
     });
     return await doctor.save();
   } catch (error) {
-    throw new Error(Error, "Error saving doctor");
+    throw new Error(error);
   }
 };
 
@@ -56,7 +56,7 @@ const updateDoctor = async (
       phone,
     });
   } catch (error) {
-    throw new Error(Error, "Error updating doctor");
+    throw new Error(error);
   }
 };
 
@@ -64,7 +64,7 @@ const deleteDoctor = async (id) => {
   try {
     return await Doctor.findByIdAndDelete(id);
   } catch (error) {
-    throw new Error(Error, "Error deleting doctor");
+    throw new Error(error);
   }
 };
 
@@ -72,7 +72,7 @@ const getDoctorByLogin = async (login) => {
   try {
     return await Doctor.findOne({ login: login });
   } catch (error) {
-    throw new Error(Error, "Doctor not found");
+    throw new Error(error);
   }
 };
 

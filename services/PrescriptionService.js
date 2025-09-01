@@ -1,10 +1,10 @@
-import prescriptionRepository from "../repositories/PrescriptionRepository.js";
+import PrescriptionRepository from "../repositories/PrescriptionRepository.js";
 
 const getAllPrescriptions = async () => {
-  return await prescriptionRepository.getAllPrescriptions();
+  return await PrescriptionRepository.getAllPrescriptions();
 };
 const getPrescriptionById = async (id) => {
-  return await prescriptionRepository.getPrescriptionById(id);
+  return await PrescriptionRepository.getPrescriptionById(id);
 };
 
 const savePrescription = async ({
@@ -14,7 +14,7 @@ const savePrescription = async ({
   dosage,
   instructions,
 }) => {
-  return await prescriptionRepository.savePrescription({
+  return await PrescriptionRepository.savePrescription({
     date,
     appointmentId,
     medicine,
@@ -27,7 +27,7 @@ const updatePrescription = async (
   id,
   { date, appointmentId, medicine, dosage, instructions }
 ) => {
-  return await prescriptionRepository.updatePrescription(id, {
+  return await PrescriptionRepository.updatePrescription(id, {
     date,
     appointmentId,
     medicine,
@@ -37,7 +37,7 @@ const updatePrescription = async (
 };
 
 const deletePrescription = async (id) => {
-  return await prescriptionRepository.deletePrescription(id);
+  return await PrescriptionRepository.deletePrescription(id);
 };
 
 const prescriptionService = {

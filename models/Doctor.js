@@ -3,10 +3,10 @@ import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
 const doctorSchema = new Schema({
-  doctorId: {
+  /* doctorId: {
     type: String,
     required: [true, "Doctor ID is required"],
-  },
+  },*/
   name: {
     type: String,
     required: [true, "Doctor name is required"],

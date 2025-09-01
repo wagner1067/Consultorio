@@ -1,7 +1,7 @@
-import { express } from "express";
+import express from "express";
 import AppointmentService from "../services/AppointmentService.js";
 
-let router = express.Router();
+const router = express.Router();
 
 router.get("/appointments", async (req, res) => {
   try {

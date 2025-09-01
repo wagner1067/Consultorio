@@ -1,16 +1,17 @@
-import { express } from "express";
-import { pkg } from "body-parser";
-import { router } from "./routes/router.js ";
+import express from "express";
+import router from "./routes/router.js";
+import "./database/database.js";
 
 const app = express();
-const { json, urlencoded } = pkg;
-const PORT = 3000;
 
-app.use(json());
-app.use(urlencoded({ extended: true }));
+// middlewares
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-app.listen(PORT, () => {
-  console.log(`Servidor rodando na porta ${PORT}`);
-});
-
+// rotas
 app.use("/", router);
+
+// servidor
+app.listen(3000, () => {
+  console.log("Servidor rodando na porta 3000!");
+});

@@ -46,15 +46,19 @@ const updateDoctor = async (
   { name, login, password, medicalSpecialty, medicalRegistration, email, phone }
 ) => {
   try {
-    return await Doctor.findByIdAndUpdate(id, {
-      name,
-      login,
-      password,
-      medicalSpecialty,
-      medicalRegistration,
-      email,
-      phone,
-    });
+    return await Doctor.findByIdAndUpdate(
+      id,
+      {
+        name,
+        login,
+        password,
+        medicalSpecialty,
+        medicalRegistration,
+        email,
+        phone,
+      },
+      { new: true, runValidators: true }
+    );
   } catch (error) {
     throw new Error(error);
   }

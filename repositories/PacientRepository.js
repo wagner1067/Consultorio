@@ -27,12 +27,16 @@ const savePacient = async ({ name, birthDate, email, phone }) => {
 
 const updatePacient = async (id, { name, birthDate, email, phone }) => {
   try {
-    return await Pacient.findByIdAndUpdate(id, {
-      name,
-      birthDate,
-      email,
-      phone,
-    });
+    return await Pacient.findByIdAndUpdate(
+      id,
+      {
+        name,
+        birthDate,
+        email,
+        phone,
+      },
+      { new: true, runValidators: true }
+    );
   } catch (error) {
     throw new Error(error);
   }

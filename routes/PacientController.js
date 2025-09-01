@@ -3,7 +3,7 @@ import PacientService from "../services/pacientService.js";
 
 const router = express.Router();
 
-router.get("/pacients ", async (req, res) => {
+router.get("/pacients", async (req, res) => {
   try {
     const pacients = await PacientService.getAllPacients();
     res.status(200).json(pacients);

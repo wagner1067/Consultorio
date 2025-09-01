@@ -42,13 +42,17 @@ const updatePrescription = async (
   { date, appointmentId, medicine, dosage, instructions }
 ) => {
   try {
-    return await Prescription.findByIdAndUpdate(id, {
-      date,
-      appointmentId,
-      medicine,
-      dosage,
-      instructions,
-    });
+    return await Prescription.findByIdAndUpdate(
+      id,
+      {
+        date,
+        appointmentId,
+        medicine,
+        dosage,
+        instructions,
+      },
+      { new: true, runValidators: true }
+    );
   } catch (error) {
     throw new Error(error);
   }

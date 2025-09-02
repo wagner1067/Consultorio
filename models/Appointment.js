@@ -10,10 +10,24 @@ const appointmentSchema = new Schema({
   doctorId: {
     type: String,
     required: [true, "Doctor ID is required"],
+    validate: {
+      validator: function (v) {
+        const id = new mongoose.Types.ObjectId.isValid(v); //Convertendo uma string para objecto Id para ser encontrado no banco
+        return Doctor.exists({ _id: id }); //Verificando se o ID existe no banco
+      },
+      message: (props) => `Doctor ID ${props.value} not found.`,
+    },
   },
   pacientId: {
     type: String,
     required: [true, "Pacient ID is required"],
+    validate: {
+      validator: function (v) {
+        const id = new mongoose.Types.ObjectId.isValid(v); //Convertendo uma string para objecto Id para ser encontrado no banco
+        return Pacient.exists({ _id: id }); //Verificando se o ID existe no banco
+      },
+      message: (props) => `Pacient ID ${props.value} not found.`,
+    },
   },
   createAt: {
     type: Date,

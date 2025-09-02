@@ -8,7 +8,7 @@ router.get("/pacients", async (req, res) => {
     const pacients = await PacientService.getAllPacients();
     res.status(200).json(pacients);
   } catch (error) {
-    console.error("Error fetching pacients:" + error);
+    console.error(error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
@@ -19,7 +19,7 @@ router.get("/pacients/:id", async (req, res) => {
     const pacient = await PacientService.getPacientById(id);
     res.status(200).json(pacient);
   } catch (error) {
-    console.error("Error fetching pacient:" + error);
+    console.error(error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
@@ -35,7 +35,7 @@ router.post("/pacients", async (req, res) => {
     });
     res.status(201).json(pacient);
   } catch (error) {
-    console.error("Error saving pacient:" + error);
+    console.error(error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
@@ -52,7 +52,7 @@ router.put("/pacients/:id", async (req, res) => {
     });
     res.status(200).json(pacient);
   } catch (error) {
-    console.error("Error updating pacient:" + error);
+    console.error(error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
@@ -63,7 +63,7 @@ router.delete("/pacients/:id", async (req, res) => {
     await PacientService.deletePacient(id);
     res.status(204).send();
   } catch (error) {
-    console.error("Error deleting pacient:" + error);
+    console.error(error);
     res.status(500).json({ message: "Internal server error" });
   }
 });

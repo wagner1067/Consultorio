@@ -47,6 +47,7 @@ const deleteDoctor = async (id) => {
   return await DoctorRepository.deleteDoctor(id);
 };
 
+//login
 const getDoctorByLogin = async (login) => {
   return await DoctorRepository.getDoctorByLogin(login);
 };

@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import bcrypt from "bcrypt";
 
 const Schema = mongoose.Schema;
 
@@ -15,15 +16,6 @@ const doctorSchema = new Schema({
   password: {
     type: String,
     required: [true, "Password is required"],
-    validate: {
-      validator: function (v) {
-        return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(
-          v
-        );
-      },
-      message: (props) =>
-        `${props.value}Password is not strong enough. It must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.`,
-    },
   },
   medicalSpecialty: {
     type: String,
@@ -60,6 +52,24 @@ const doctorSchema = new Schema({
     type: Date,
     default: Date.now,
   },
+});
+
+doctorSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next();
+
+  const passwordRegex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+  if (!passwordRegex.test(this.password)) {
+    return next(
+      new Error(
+        "Password is not strong enough. It must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character."
+      )
+    );
+  }
+
+  this.password = await bcrypt.hash(this.password, 10);
+  next();
 });
 
 const doctor = mongoose.model("Doctor", doctorSchema);

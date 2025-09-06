@@ -39,7 +39,7 @@ const savePrescription = async ({
 
 const updatePrescription = async (
   id,
-  { date, appointmentId, medicine, dosage, instructions }
+  { date, appointmentId, medicine, dosage, instructions, file }
 ) => {
   try {
     return await Prescription.findByIdAndUpdate(
@@ -50,6 +50,7 @@ const updatePrescription = async (
         medicine,
         dosage,
         instructions,
+        file,
       },
       { new: true, runValidators: true }
     );

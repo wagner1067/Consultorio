@@ -39,7 +39,6 @@ export default function Home() {
   };
 
   return (
-    // Removendo 'bg-gray-100' para que o body controle a cor de fundo
     <div className="flex items-center justify-center min-h-screen px-4">
       {/* Adicionando as classes de tema escuro */}
       <form

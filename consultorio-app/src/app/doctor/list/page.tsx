@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { Trash2, Pencil } from "lucide-react";
 import Link from "next/link";
+import ConfirmModal from "@/components/ConfirmModal"; // Importe o novo componente
 
 interface Doctor {
   _id: string;
@@ -16,60 +17,89 @@ interface Doctor {
 export default function DoctorList() {
   const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+
+  const [showModal, setShowModal] = useState(false);
+  const [doctorToDelete, setDoctorToDelete] = useState<string | null>(null);
+  const [doctorNameToDelete, setDoctorNameToDelete] = useState<string | null>(
+    null
+  );
 
   useEffect(() => {
     const fetchDoctors = async () => {
       try {
+        const token = sessionStorage.getItem("token");
         const response = await fetch("http://127.0.0.1:3001/doctors", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            Authorization: sessionStorage.getItem("token") || "",
+            Authorization: token ? `Bearer ${token}` : "",
           },
         });
-
         const data = await response.json();
 
-        // --- CÓDIGO AJUSTADO AQUI ---
-        // Verifique se os dados recebidos são um array.
-        // Se for um array, atualiza a lista de médicos.
-        // Se não, exibe a mensagem de erro da API ou uma genérica.
-        if (Array.isArray(data)) {
-          setDoctors(data);
-          setError(null); // Limpa o erro caso a requisição anterior tenha falhado.
+        if (response.ok) {
+          if (Array.isArray(data)) {
+            setDoctors(data);
+            setError(null);
+          } else {
+            setError(data.error || "A resposta da API não é um array.");
+            setDoctors([]);
+          }
         } else {
-          // Se a API retornou um objeto de erro, usa a mensagem do objeto.
-          setError(data.error || "A resposta da API não é um array.");
-          setDoctors([]); // Garante que doctors é um array vazio para evitar o erro de .map()
+          setError(data.error || "Erro ao carregar lista de médicos");
+          setDoctors([]);
         }
       } catch (err) {
         setError("Erro ao carregar lista de médicos");
-        setDoctors([]); // Garante que doctors é um array vazio.
+        setDoctors([]);
       }
     };
-
     fetchDoctors();
   }, []);
 
-  const deleteDoctor = async (id: string) => {
-    try {
-      const response = await fetch(`http://127.0.0.1:3001/doctors/${id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: sessionStorage.getItem("token") || "",
-        },
-      });
+  const handleOpenModal = (id: string, name: string) => {
+    setDoctorToDelete(id);
+    setDoctorNameToDelete(name);
+    setShowModal(true);
+  };
 
-      const content = await response.json();
+  const handleCancelDelete = () => {
+    setShowModal(false);
+    setDoctorToDelete(null);
+    setDoctorNameToDelete(null);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!doctorToDelete) return;
+    try {
+      const token = sessionStorage.getItem("token");
+      const response = await fetch(
+        `http://127.0.0.1:3001/doctors/${doctorToDelete}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token ? `Bearer ${token}` : "",
+          },
+        }
+      );
 
       if (response.ok) {
-        setDoctors((prev) => prev.filter((doc) => doc._id !== id));
+        setDoctors((prev) => prev.filter((doc) => doc._id !== doctorToDelete));
+        setError(null);
+        setSuccess("Médico deletado com sucesso!");
+        setTimeout(() => setSuccess(null), 3000);
       } else {
+        const content = await response.json();
         setError(content.error || "Erro ao deletar médico");
+        setSuccess(null);
       }
     } catch (err) {
       setError("Erro de conexão com o servidor");
+      setSuccess(null);
+    } finally {
+      handleCancelDelete();
     }
   };
 
@@ -96,7 +126,6 @@ export default function DoctorList() {
               <th className="px-4 py-2 text-center">Ações</th>
             </tr>
           </thead>
-
           <tbody>
             {doctors.map((doctor: Doctor, index) => (
               <tr
@@ -128,7 +157,7 @@ export default function DoctorList() {
                 <td className="px-4 py-2 text-center">
                   <div className="flex gap-2 justify-center">
                     <button
-                      onClick={() => deleteDoctor(doctor._id)}
+                      onClick={() => handleOpenModal(doctor._id, doctor.name)} // Altere esta linha
                       className="flex items-center justify-center gap-1 bg-red-500 hover:bg-red-600 px-3 py-2 rounded text-white text-sm w-20"
                     >
                       <Trash2 size={16} /> Delete
@@ -177,7 +206,7 @@ export default function DoctorList() {
 
             <div className="flex gap-2 mt-3">
               <button
-                onClick={() => deleteDoctor(doctor._id)}
+                onClick={() => handleOpenModal(doctor._id, doctor.name)} // Altere esta linha
                 className="flex-1 flex items-center justify-center gap-1 bg-red-500 hover:bg-red-600 px-3 py-2 rounded text-white text-sm"
               >
                 <Trash2 size={16} /> Delete
@@ -193,6 +222,20 @@ export default function DoctorList() {
         ))}
       </div>
 
+      {showModal && (
+        <ConfirmModal
+          message={`Tem certeza que deseja deletar o médico ${doctorNameToDelete}?`}
+          onConfirm={handleConfirmDelete}
+          onCancel={handleCancelDelete}
+        />
+      )}
+
+      {/* ... (Seu código de sucesso e erro) */}
+      {success && (
+        <div className="mt-4 p-3 text-sm text-green-700 border border-green-400 rounded-md bg-green-100 dark:bg-green-900 dark:text-green-300 dark:border-green-600">
+          {success}
+        </div>
+      )}
       {error && (
         <div className="mt-4 p-3 text-red-700 border border-red-400 rounded-md bg-red-100 dark:bg-red-900 dark:text-red-300 dark:border-red-600">
           {error}

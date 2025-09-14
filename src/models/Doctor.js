@@ -42,7 +42,8 @@ const doctorSchema = new Schema({
     required: [true, "Phone is required"],
     validate: {
       validator: function (v) {
-        return /\d{2} 9\d{4}-\d{4}/.test(v);
+        const normalizedPhone = v.replace(/\D/g, "");
+        return /^\d{2}9\d{8}$/.test(normalizedPhone);
       },
       message: (props) =>
         `${props.value} This is not a valid phone value. Please use the following format: 99 91234-5678`,
@@ -58,7 +59,7 @@ doctorSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
 
   const passwordRegex =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+={}\[\]|\\:;"'<,>.?/~`])[A-Za-z\d!@#$%^&*()_+={}\[\]|\\:;"'<,>.?/~`]{8,}$/;
 
   if (!passwordRegex.test(this.password)) {
     return next(

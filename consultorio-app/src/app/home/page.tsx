@@ -15,6 +15,8 @@ export default function Home() {
         <Link href="/appointment/create">Create new appointment</Link>
         <br />
         <Link href="/prescription/create">Create new prescription</Link>
+        <br />
+        <Link href="/prescription/upload">Upload prescriptions</Link>
       </div>
     </>
   );

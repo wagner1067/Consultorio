@@ -30,7 +30,7 @@ router.post("/login", async (req, res) => {
     }
 
     const token = jwt.sign({ doctorId: doctor._id }, "your_secret_key", {
-      expiresIn: "1h",
+      expiresIn: "5h",
     });
     res.status(200).json({ token });
   } catch (error) {

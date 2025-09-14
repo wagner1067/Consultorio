@@ -5,7 +5,6 @@ import React, { useState } from "react";
 
 export default function DoctorCreate() {
   const router = useRouter();
-
   const [name, setName] = useState("");
   const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
@@ -14,6 +13,7 @@ export default function DoctorCreate() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
 
   const addDoctor = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,7 +28,7 @@ export default function DoctorCreate() {
       !email ||
       !phone
     ) {
-      setError("Preencha todos os campos!");
+      setError("Por favor, preencha todos os campos.");
       return;
     }
 
@@ -42,8 +42,8 @@ export default function DoctorCreate() {
       phone,
     };
 
-    const token = localStorage.getItem("token");
-
+    const token = sessionStorage.getItem("token");
+    console.log("Token a ser enviado:", token);
     try {
       const response = await fetch("http://127.0.0.1:3001/doctors", {
         method: "POST",
@@ -57,17 +57,21 @@ export default function DoctorCreate() {
       const content = await response.json();
 
       if (response.ok) {
-        router.push("/home");
+        setSuccess("Médico criado com sucesso!");
+        setTimeout(() => {
+          router.push("/home");
+        }, 5000);
       } else {
         setError(content.error || "Erro ao criar médico.");
+        setSuccess(null);
       }
     } catch (err) {
       setError("Erro de conexão com o servidor.");
+      setSuccess(null);
     }
   };
 
   return (
-    // Remova a classe 'bg-gray-100' deste div
     <div className="flex items-center justify-center min-h-screen px-4 transition-colors">
       <div className="w-full max-w-2xl bg-white dark:bg-gray-800 shadow-md rounded-xl p-6 transition-colors">
         <Link
@@ -171,6 +175,13 @@ export default function DoctorCreate() {
           <button className="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-2 rounded-md transition">
             Criar Médico
           </button>
+
+          {/* Mensagem de sucesso */}
+          {success && (
+            <div className="mt-4 p-3 text-sm text-green-700 border border-green-400 rounded-md bg-green-100 dark:bg-green-900 dark:text-green-300 dark:border-green-600">
+              {success}
+            </div>
+          )}
 
           {/* Erro */}
           {error && (

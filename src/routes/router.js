@@ -16,7 +16,7 @@ router.get("/", (req, res) => {
 });
 
 //mapeamento de login
-router.post("/login", async (req, res) => {
+/*router.post("/login", async (req, res) => {
   try {
     const { login, password } = req.body;
     const doctor = await DoctorService.getDoctorByLogin(login);
@@ -37,11 +37,11 @@ router.post("/login", async (req, res) => {
     console.error(error);
     res.status(500).json({ error: "Internal server error" });
   }
-});
+});*/
 
-router.use("/", verifyToken, appointmentController);
-router.use("/", verifyToken, doctorController);
-router.use("/", verifyToken, pacientCoptroller);
-router.use("/", verifyToken, prescriptionController);
+router.use("/", appointmentController);
+router.use("/", doctorController);
+router.use("/", pacientCoptroller);
+router.use("/", prescriptionController);
 
 export default router;
